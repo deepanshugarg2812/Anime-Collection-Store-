@@ -1,6 +1,7 @@
 server:
-  port: 8080
-  
+  port: 8081
+ 
+ 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,8 +11,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/deepanshugarg2812/Anime-Collection-Store-/tree/deepanshu
