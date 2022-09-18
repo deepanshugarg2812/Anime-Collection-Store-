@@ -7,15 +7,21 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +45,34 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 	
+	@Autowired
+	RestTemplate restTemplate;
+	
+	/**
+	 * Method to validate the jwt token from Authentication_service
+	 *
+	 */
+	public boolean isValidUser(String username,String token) throws RestClientException{
+		//set the content type as MultiPart Form Media
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		body.add("token", token);
+		body.add("username",username);
+		
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
+		
+		ResponseEntity<Boolean> res = restTemplate.postForEntity("http://localhost:8081/auth/validate", requestEntity, Boolean.class);
+	
+		//check the res
+		if(res.getStatusCode()==HttpStatus.OK) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * 
 	 * @param product
@@ -46,9 +80,24 @@ public class ProductController {
 	 * @return
 	 */
 	@PostMapping(path = "/add",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<Product> addProduct(@RequestPart(required = true , name = "product") String product,@RequestPart(required = false,name = "image") MultipartFile image){
+	public ResponseEntity<Product> addProduct(@RequestPart(required = true , name = "product") String product,@RequestPart(required = false,name = "image") MultipartFile image,@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
 		ResponseEntity<Product> response = null;
 		Product prod = null;
+		
+		//validate the token
+		try {
+			if(isValidUser(username, token)==false) {
+				response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+				return response;
+			}
+		}catch(RestClientException e) {
+			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return response;
+		}
+		catch(Exception e) {
+			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return response;
+		}
 		
 		try {
 			//Create a Product object			
@@ -105,8 +154,23 @@ public class ProductController {
 	 * @return
 	 */
 	@GetMapping(path = "/delete")
-	public ResponseEntity<List<Product>> deleteProduct(@RequestParam(required = true,name="id")Long id){
+	public ResponseEntity<List<Product>> deleteProduct(@RequestParam(required = true,name="id")Long id,@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
 		ResponseEntity<List<Product>> response = null;
+		
+		//validate the token
+		try {
+			if(isValidUser(username, token)==false) {
+				response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+				return response;
+			}
+		}catch(RestClientException e) {
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return response;
+		}
+		catch(Exception e) {
+			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return response;
+		}
 		
 		try {
 			productService.deleteProduct(id);
@@ -152,10 +216,25 @@ public class ProductController {
 	 * @param image
 	 * @return
 	 */
-	@PostMapping(path = "/update")
-	public ResponseEntity<Product> updateProduct(@RequestPart(required = true , name = "product") String product,@RequestPart(required = false,name = "image") MultipartFile image){
+	@PostMapping(path = "/update",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<Product> updateProduct(@RequestPart(required = true , name = "product") String product,@RequestPart(required = false,name = "image") MultipartFile image,@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
 		ResponseEntity<Product> response = null;
 		Product prod = null;
+		
+		//validate the token
+		try {
+			if(isValidUser(username, token)==false) {
+				response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+				return response;
+			}
+		}catch(RestClientException e) {
+			response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return response;
+		}
+		catch(Exception e) {
+			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			return response;
+		}
 		
 		try {
 			//Create a Product object			

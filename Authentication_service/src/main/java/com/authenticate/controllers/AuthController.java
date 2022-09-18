@@ -27,6 +27,8 @@ import com.authenticate.entities.User;
 import com.authenticate.security.JwtTokenProvider;
 import com.authenticate.service.MyUserDetailService;
 
+import io.jsonwebtoken.security.SignatureException;
+
 @RestController
 @RequestMapping(path = "/auth")
 public class AuthController {
@@ -103,7 +105,7 @@ public class AuthController {
 		return response;
 	}
 	
-	@GetMapping(path = "/validate",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PostMapping(path = "/validate",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<Boolean> verifyToken(@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
 		//create a reponse object
 		ResponseEntity<Boolean> response = null;
@@ -125,6 +127,9 @@ public class AuthController {
 			}
 		}
 		catch(UsernameNotFoundException e) {
+			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		catch(SignatureException e) {
 			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		return response;
