@@ -1,17 +1,23 @@
 package com.authenticate.entities;
 
+import java.util.Arrays;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -38,7 +44,11 @@ public class User implements UserDetails{
 	@Column(nullable = false,name = "Email",unique = true)
 	private String email;
 	
+	private String role;
+	
+	
 	public User() {}
+	
 	
 	public User( @Size(min = 6) String userName, @Size(min = 6) String name, @Size(min = 6) String password,
 			@Email String email) {
@@ -96,6 +106,18 @@ public class User implements UserDetails{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	
+
+	public String getRole() {
+		return role;
+	}
+
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 
 	@Override
 	public String toString() {
@@ -105,8 +127,7 @@ public class User implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(new SimpleGrantedAuthority(role));
 	}
 
 	@Override

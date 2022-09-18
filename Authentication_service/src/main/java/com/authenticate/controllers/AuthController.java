@@ -134,4 +134,9 @@ public class AuthController {
 		}
 		return response;
 	}
+	
+	@GetMapping(path = "/user")
+	public String userRole() {
+		return "User";
+	}
 }

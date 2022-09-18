@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.authenticate.entities.User;
+import com.authenticate.repository.RoleRepository;
 import com.authenticate.repository.UserRepository;
 
 @Service
@@ -15,6 +16,9 @@ public class MyUserDetailService implements UserDetailsService{
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	@Override
 	public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,6 +33,7 @@ public class MyUserDetailService implements UserDetailsService{
 		System.out.println(user);
 		try {
 			user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+			user.setRole("ROLE_USER");
 			User res = userRepository.save(user);
 			return res;
 		}
