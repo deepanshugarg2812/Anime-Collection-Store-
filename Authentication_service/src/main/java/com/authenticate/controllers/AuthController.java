@@ -105,10 +105,36 @@ public class AuthController {
 		return response;
 	}
 	
-	@PostMapping(path = "/validate",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<Boolean> verifyToken(@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
+	@PostMapping(path = "/registeradmin")
+	public ResponseEntity<User> registerAdmin(@RequestBody @Valid User user){
 		//create a reponse object
-		ResponseEntity<Boolean> response = null;
+		ResponseEntity<User> response = null;
+		
+		//validate the data
+		try {
+			
+			//save to db
+			try {
+				User res = myUserDetailService.saveAdmin(user);
+				response = new ResponseEntity<>(res,HttpStatus.ACCEPTED);
+			}
+			catch(Exception e) {
+				response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+				
+		return response;
+	}
+	
+	
+	@PostMapping(path = "/validate",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+	public ResponseEntity<User> verifyToken(@RequestPart(required = true,name = "username")String username,@RequestPart(required = true,name = "token")String token){
+		//create a reponse object
+		ResponseEntity<User> response = null;
 		
 		try {
 			User user = myUserDetailService.loadUserByUsername(username);
@@ -122,7 +148,7 @@ public class AuthController {
 					response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 				}
 				else {
-					response = new ResponseEntity<>(HttpStatus.OK);
+					response = new ResponseEntity<User>(user,HttpStatus.OK);
 				}
 			}
 		}
@@ -133,10 +159,5 @@ public class AuthController {
 			response = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		return response;
-	}
-	
-	@GetMapping(path = "/user")
-	public String userRole() {
-		return "User";
 	}
 }

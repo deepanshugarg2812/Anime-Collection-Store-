@@ -1,4 +1,4 @@
-package com.authenticate.security;
+package com.products.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

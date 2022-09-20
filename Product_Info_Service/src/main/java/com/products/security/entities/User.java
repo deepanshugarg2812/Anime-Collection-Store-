@@ -1,4 +1,4 @@
-package com.authenticate.entities;
+package com.products.security.entities;
 
 import java.util.ArrayList;
 import java.util.Arrays;

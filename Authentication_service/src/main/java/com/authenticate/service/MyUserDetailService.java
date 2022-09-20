@@ -41,4 +41,17 @@ public class MyUserDetailService implements UserDetailsService{
 			throw new Exception("Error occured");
 		}
 	}
+	
+	public User saveAdmin(User user) throws Exception{
+		System.out.println(user);
+		try {
+			user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+			user.setRole("ROLE_ADMIN");
+			User res = userRepository.save(user);
+			return res;
+		}
+		catch(Exception e) {
+			throw new Exception("Error occured");
+		}
+	}
 }
