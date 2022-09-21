@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: DeepGar2812#*
+    url: jdbc:mysql://localhost:3306/animecollection
+  jpa:
+    hibernate:
+      ddl-auto: update
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/deepanshugarg2812/Anime-Collection-Store-/tree/deepanshu
