@@ -1,4 +1,4 @@
-package com.products.entities;
+package com.reviews.entities;
 
 import java.util.Arrays;
 import java.util.List;

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.reviews.entities.Product;
 import com.reviews.entities.Review;
 import com.reviews.repository.ReviewRepository;
 import com.reviews.security.entities.User;
@@ -24,9 +25,12 @@ public class ReviewServiceImpl implements ReviewService{
 	@Autowired
 	UserDetailsService userDetailsService;
 	
+	@Autowired
+	ProductService productService;
+	
 	@Override
-	public List<Review> getAllReviewsForProduct(String productId) {
-		return reviewRepository.findAll();
+	public List<Review> getAllReviewsForProduct(Long productId) {
+		return reviewRepository.findByProductId(productId);
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService{
 	}
 
 	@Override
-	public Review addReview(Review review, String username) throws UsernameNotFoundException{
+	public Review addReview(Long productId,Review review, String username) throws Exception{
 		//get the user details
 		User user = null;
 		try {
@@ -51,6 +55,18 @@ public class ReviewServiceImpl implements ReviewService{
 		}catch(UsernameNotFoundException e) {
 			throw new UsernameNotFoundException("Error , user not present");
 		}
+		
+		//get the product details
+		//fetch the product
+		Product product = null;
+		try {
+			product = productService.getProductFromService(productId);
+			
+		}catch(Exception e) {
+			throw new Exception();
+		}
+				
+		review.setProduct(product);
 		review.setUser(user);
 		Review res = reviewRepository.save(review);
 		res.getUser().setPassword("");

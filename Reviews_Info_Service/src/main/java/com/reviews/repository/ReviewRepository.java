@@ -13,4 +13,7 @@ import com.reviews.entities.Review;
 public interface ReviewRepository extends JpaRepository<Review,Long>{
 	@Query("select r from Review r where user_id = ?1")
 	public List<Review> findByUserId(Long id);
+	
+	@Query("select r from Review r where product_id = ?1")
+	public List<Review> findByProductId(Long id);
 }

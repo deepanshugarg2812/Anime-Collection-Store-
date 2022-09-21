@@ -5,9 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviews.security.entities.User;
 
 @Entity
@@ -25,6 +27,9 @@ public class Review {
 	
 	@OneToOne(targetEntity = User.class)
 	private User user;
+	
+	@ManyToOne(targetEntity = Product.class)
+	private Product product;
 	
 	
 	public Review() {} 
@@ -74,6 +79,7 @@ public class Review {
 		this.stars = stars;
 	}
 
+	
 	public User getUser() {
 		return user;
 	}
@@ -81,4 +87,15 @@ public class Review {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	@JsonIgnore
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	
+	
 }
