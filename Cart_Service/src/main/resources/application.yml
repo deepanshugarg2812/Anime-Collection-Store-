@@ -12,3 +12,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+#Configure the name of spring app
+  application:
+    name: Cart_Service
+
+#Configure the eureka client
+eureka:
+  client:
+    register-with-eureka: true #Register this with eureks
+    
+  instance:
+    hostname: locahost

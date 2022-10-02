@@ -11,3 +11,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+  application:
+    name: Order_Service
+
+#Configure the eureka client
+eureka:
+  client:
+    register-with-eureka: true #Register this with eureks
+    
+  instance:
+    hostname: locahost

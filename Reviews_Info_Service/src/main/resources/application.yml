@@ -15,3 +15,13 @@ spring:
       server:
         git:
           uri: https://github.com/deepanshugarg2812/Anime-Collection-Store-/tree/deepanshu
+  application:
+    name: Review_Service
+
+#Configure the eureka client
+eureka:
+  client:
+    register-with-eureka: true #Register this with eureks
+    
+  instance:
+    hostname: locahost
