@@ -11,3 +11,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  application:
+    name: Auth_Service

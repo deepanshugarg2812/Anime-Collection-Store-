@@ -1,0 +1,21 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: API_Gateway_Service
+  cloud:
+    gateway:
+      routes:
+      - id: Auth_Service
+        predicates:
+        - Path=/auth/**
+        uri: http://localhost:8081/
+        
+ 
+eureka:
+  client:
+    register-with-eureka: true 
+  instance:
+    hostname: localhost
+    
